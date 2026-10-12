@@ -110,7 +110,7 @@ def warc_body(raw):
     if not http_head.startswith('HTTP/') or ' 200' not in http_head.split('\r\n')[0]:
         return None
     h = http_head.lower()
-    if 'transfer-encoding: chunked' in h:
+    if 'transfer-encoding: chunked' in h and re.match(rb'^[0-9a-fA-F]{1,8}(;[^\r]*)?\r\n', body):
         out, pos = b'', 0
         while True:
             e = body.find(b'\r\n', pos)
@@ -162,7 +162,7 @@ def fetch(s, only_lang=None, keep=None):
                 os.replace(out + '.tmp', out)
                 break
 
-    with ThreadPoolExecutor(4) as ex:      # data.commoncrawl.org (CloudFront/S3); <= 4 parallel requests
+    with ThreadPoolExecutor(2) as ex:      # data.commoncrawl.org throttles (HTTP 403/503) above a few parallel requests
         for i, _ in enumerate(ex.map(job, todo)):
             if i % 200 == 0:
                 print('fetched', i, len(todo), flush=True)

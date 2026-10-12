@@ -8,8 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 RAW = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '_raw', 'kz')
 UA = 'LawCodex/1.0 (+https://github.com/LawCodex)'
-WORKERS = 1
-DELAY = 4.0   # Internet Archive tolerates roughly 15 requests/minute
+WORKERS = 3
+DELAY = 3.0   # per worker; the Internet Archive throttles aggressive clients
 lock = threading.Lock()
 sess = threading.local()
 
