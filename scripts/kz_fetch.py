@@ -8,8 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 RAW = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '_raw', 'kz')
 UA = 'LawCodex/1.0 (+https://github.com/LawCodex)'
-WORKERS = 2
-DELAY = 2.0
+WORKERS = 1
+DELAY = 4.0   # Internet Archive tolerates roughly 15 requests/minute
 lock = threading.Lock()
 sess = threading.local()
 
@@ -34,14 +34,15 @@ def get(url):
                 return body
             if r.status_code == 404:
                 return None
-            if r.status_code >= 500 and attempt >= 1:
+            if r.status_code >= 500:
                 return None          # broken capture: caller tries an older snapshot
             wait = 60 if r.status_code == 429 else 10 * (attempt + 1)
             print('HTTP', r.status_code, url, 'sleep', wait, file=sys.stderr, flush=True)
             time.sleep(wait)
         except Exception as e:
             print('ERR', url, e, file=sys.stderr, flush=True)
-            time.sleep(10 * (attempt + 1))
+            # connection refused = temporary IP block by the Internet Archive: back off hard
+            time.sleep(60 if 'Tunnel' in str(e) or 'refused' in str(e) else 10 * (attempt + 1))
     return None
 
 def job(row):
@@ -75,7 +76,8 @@ def main():
         # Kazakh pages only for documents whose Russian page is a law/code in force
         keep = set(l.split('\t')[0] for l in open(os.path.join(RAW, 'rus_inforce.txt')))
         rows = [r for r in rows if r[0] == 'kaz' and r[1] in keep]
-    rows.sort(key=lambda r: (r[1][0] != 'K', r[1]))
+    # documents captured recently first (older-only captures are mostly repealed acts)
+    rows.sort(key=lambda r: (r[2][:4] < '2024', r[1][0] != 'K', r[1]))
     for lang in ('rus', 'kaz'):
         os.makedirs(os.path.join(RAW, 'html', lang), exist_ok=True)
     n = 0

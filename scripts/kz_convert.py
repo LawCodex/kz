@@ -307,18 +307,25 @@ def main():
         sub = DIRS[ld][typ]
         rel = os.path.join(ld, sub, year, docid + '.md') if typ == 'law' else os.path.join(ld, sub, docid + '.md')
         url = f'https://adilet.zan.kz/{lang}/docs/{docid}'
-        arch = f'https://web.archive.org/web/{ts}/{url}'
-        snap = f'{ts[:4]}-{ts[4:6]}-{ts[6:8]}'
+        if ts.startswith('cc:'):
+            _, cts, cfile, coff, clen = ts.split(':')
+            arch = f'https://data.commoncrawl.org/{cfile}'
+            archnote = f'Common Crawl WARC record, bytes {coff}+{clen}'
+            snap = f'{cts[:4]}-{cts[4:6]}-{cts[6:8]}'
+        else:
+            arch = f'https://web.archive.org/web/{ts}/{url}'
+            archnote = 'Internet Archive'
+            snap = f'{ts[:4]}-{ts[4:6]}-{ts[6:8]}'
         fm = ['---', f'title: {yaml_str(title)}', f'identifier: "{docid}"']
         if number:
             fm.append(f'number: {yaml_str(number)}')
-        fm += [f'type: {typ}', 'jurisdiction: kz', f'language: {"ru" if lang == "rus" else "kk"}']
+        fm += [f'type: {"act" if typ == "law" else typ}', 'jurisdiction: kz', f'language: {"ru" if lang == "rus" else "kk"}']
         if date:
             fm.append(f'date: {date}')
         fm += [f'last_amended: {snap}  # consolidated text as captured on this date',
                'status: in_force', f'adilet_status: {yaml_str(sttxt)}',
                f'description: {yaml_str(desc)}',
-               f'source: "{url}"', f'archived_source: "{arch}"', f'retrieved: {RETRIEVED}', '---', '']
+               f'source: "{url}"', f'archived_source: "{arch}"', f'archive: "{archnote}"', f'retrieved: {RETRIEVED}', '---', '']
         md = '\n'.join(fm) + f'\n# {title}\n\n' + render(blocks)
         out = os.path.join(REPO, rel)
         os.makedirs(os.path.dirname(out), exist_ok=True)
