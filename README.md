@@ -8,7 +8,25 @@ Retrieved: **2026-10-12**.
 
 ## Coverage
 
-__COUNTS__
+| Path | Contents | Files |
+|---|---|---:|
+| `ru/konstitutsiya/` | Constitution of 2026 (Russian) | 1 |
+| `ru/kodeksy/` | Codes (Russian) | 27 |
+| `ru/konstitutsionnye-zakony/` | Constitutional laws (Russian) | 88 |
+| `ru/zakony/<year>/` | Laws (Russian) | 2,818 |
+| `kk/konstitutsiya/` | Constitution of 2026 (Kazakh) | 1 |
+| `kk/kodekster/` | Codes (Kazakh) | 24 |
+| `kk/konstitutsiyalyq-zandar/` | Constitutional laws (Kazakh) | 87 |
+| `kk/zandar/<year>/` | Laws (Kazakh) | 2,550 |
+| **Total** | | **5,596** |
+
+3,428 archived Russian `K…`/`Z…` pages were examined: 332 were marked repealed and 150 were not
+codes/laws (presidential addresses etc.). Kazakh pages were fetched only for the acts kept in Russian;
+345 of them have no archived Kazakh page.
+
+Capture dates (`last_amended`) of the Russian texts: 2026: 1,122 · 2025: 1,082 · 2024: 239 ·
+2021–2023: 74 · **2019–2020: 417** (rarely crawled acts — these texts may be outdated, and some of these
+acts may have been repealed since).
 
 * **Constitution** — the Constitution adopted by referendum on 15 March 2026 (in force since
   1 July 2026, Adilet ID `K2600000000`). The 1995 Constitution is repealed and not included.
@@ -49,9 +67,8 @@ was rarely crawled may be older: always check `last_amended` and the archived so
 
 ## Not covered / gaps
 
-* Documents never captured by either archive (the archives hold roughly __COVERAGE__ of the
-  `K…`/`Z…` documents known to the Wayback Machine). Acts adopted after the redesign
-  (September 2026) are missing.
+* Documents never captured by either archive, and acts adopted or amended after the redesign
+  (September 2026). Status is the one shown at capture time.
 * Kazakh (`kk/`) versions exist only for acts whose Kazakh page was archived.
 * Presidential addresses to the nation (also filed under `K…`) are skipped.
 * Secondary legislation (presidential decrees `U…`, government resolutions `P…`, registered
