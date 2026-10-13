@@ -221,6 +221,7 @@ def render(blocks):
 
 
 def parse_date(s, lang):
+    s = s.replace('i', 'і').replace('I', 'І')   # Adilet mixes Latin i into Kazakh text
     m = re.search(r'(\d{1,2})\s+([А-Яа-яӘәҒғҚқҢңӨөҰұҮүҺһІі]+)\s+(\d{4})', s)
     if m:
         d, mon, y = m.groups()
